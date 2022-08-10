@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', function() {
     echo '<pre>';
-    print_r(2342432);
+    print_r('web');
     die;
     return view('welcome');
 });

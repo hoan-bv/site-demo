@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\ControllerUser;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,11 +15,31 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::middleware('auth:sanctum')->get('/user', function(Request $request) {
-    echo '<pre>';
-    print_r(22222222222);
-    die;
-    return $request->user();
+//Route::middleware('auth:sanctum')->get('/user', function(Request $request) {
+//    echo '<pre>';
+//    print_r(22222222222);
+//    die;
+//    return $request->user();
+//});
+Route::prefix('users')->group(function() {
+    Route::get('/', function() {
+        echo '<pre>';
+        print_r(11111111111);
+        die;
+    });
+    Route::post('/create', [
+        App\Http\Controllers\UserController::class,
+        'store',
+    ]);
+    Route::post('/store', [
+        UserController::class,
+        'store',
+    ]);
+    Route::post('/edit', function() {
+        echo '<pre>';
+        print_r(22222222222);
+        die;
+    });
 });
 Route::get('/test', function() {
     echo '<pre>';
@@ -25,13 +47,9 @@ Route::get('/test', function() {
     die;
     return $request->user();
 });
-Route::get('/', function() {
-    echo '<pre>';
-    print_r(333333333333333333);
-    die;
-});
-Route::get('create', function() {
-    echo '<pre>';
-    print_r(333333333333333333);
-    die;
-});
+//Route::get('/', function() {
+//    echo '<pre>';
+//    print_r('home111111111111');
+//    die;
+//});
+
