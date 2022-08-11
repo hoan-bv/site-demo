@@ -21,35 +21,47 @@ use Illuminate\Support\Facades\Route;
 //    die;
 //    return $request->user();
 //});
-Route::prefix('users')->group(function() {
-    Route::get('/', function() {
-        echo '<pre>';
-        print_r(11111111111);
-        die;
-    });
-    Route::post('/create', [
-        App\Http\Controllers\UserController::class,
-        'store',
+//Route::prefix('users')->group(function() {
+//    Route::get('/', function() {
+//        echo '<pre>';
+//        print_r(11111111111);
+//        die;
+//    });
+//    Route::post('register', [
+//        UserController::class,
+//        'register',
+//    ]);
+//    Route::get('/index', [
+//        App\Http\Controllers\UserController::class,
+//        'index',
+//    ]);
+//
+//});
+Route::post('login', [
+    UserController::class,
+    'authenticate',
+]);
+Route::group(['middleware' => ['jwt.verify']], function() {
+    //Route::middleware(['jwt.verify'])->group(function () {
+    Route::get('logout', [
+        UserController::class,
+        'logout',
     ]);
-    Route::post('/store', [
+    Route::get('detail', [
+        UserController::class,
+        'detail',
+    ]);
+    Route::post('/edit', [
+        UserController::class,
+        'edit',
+    ]);
+    Route::post('create', [
         UserController::class,
         'store',
     ]);
-    Route::post('/edit', function() {
-        echo '<pre>';
-        print_r(22222222222);
-        die;
-    });
 });
 Route::get('/test', function() {
-    echo '<pre>';
-    print_r(22222222222);
-    die;
-    return $request->user();
+    return 2222;
 });
-//Route::get('/', function() {
-//    echo '<pre>';
-//    print_r('home111111111111');
-//    die;
-//});
+
 
