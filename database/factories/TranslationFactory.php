@@ -17,12 +17,13 @@ class TranslationFactory extends Factory {
     public function definition() {
 
         return [
-//                        'title'   => $this->faker->title,
-            'title'   => [
-                'en' => $this->faker->sentence($nbWords = 7, $variableNbWords = true),
-                'it' => $this->faker->sentence($nbWords = 7, $variableNbWords = true),
-            ],
+            'title'   => $this->faker->title,
+            'lang_id' => rand(1,2),
             'content' => $this->faker->text,
         ];
     }
 }
+//'title'   => [
+//    'en' => $this->faker->sentence($nbWords = 7, $variableNbWords = true),
+//    'it' => $this->faker->sentence($nbWords = 7, $variableNbWords = true),
+//],

@@ -9,6 +9,19 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * @property int      $id
+ * @property string   $name
+ * @property string   $email
+ * @property string   $email_verified_at
+ * @property string   $password
+ * @property int      $lang_id
+ * @property string   $remember_token
+ * @property string   $created_at
+ * @property string   $updated_at
+ * @property Language $language
+ *
+ */
 class User extends Authenticatable implements JWTSubject {
 
     use HasApiTokens, HasFactory, Notifiable;
@@ -55,5 +68,12 @@ class User extends Authenticatable implements JWTSubject {
 
     public function getJWTCustomClaims() {
         return [];
+    }
+
+    public function language() {
+        //        echo '<pre>';
+        //        print_r(444444);
+        //        die;
+        return $this->hasOne(Language::class, 'id', 'lang_id');
     }
 }

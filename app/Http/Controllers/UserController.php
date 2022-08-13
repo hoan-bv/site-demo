@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Language;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -14,8 +17,18 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 /**
  * Class UserController
  * @package App\Http\Controllers
+ * @property UserService $userService
  */
 class UserController extends Controller {
+
+    protected $userService;
+
+    /**
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService) {
+        $this->userService = $userService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -118,38 +131,18 @@ class UserController extends Controller {
 
     public function authenticate(Request $request) {
 
-        $credentials = $request->only('email', 'password');
-        //valid credential
-        $validator = Validator::make($credentials, [
-            'email'    => 'required|email',
-            'password' => 'required|string|min:6|max:50',
-        ]);
-        //Send failed response if request is not valid
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->messages()], 200);
-        }
-        //Request is validated
-        //Crean token
-        try {
 
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Login credentials are invalid.',
-                ], 400);
-            }
-        } catch (JWTException $e) {
-            //            return $credentials;
-            return response()->json([
-                'success' => false,
-                'message' => 'Could not create token.',
-            ], 500);
+        $result['status'] = 200;
+        try {
+            $result['data'] = $this->userService->login($request);
+
+        } catch (\Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage(),
+            ];
         }
-        //Token created, return with success response and jwt token
-        return response()->json([
-            'success' => true,
-            'token'   => $token,
-        ]);
+        return response()->json($result, $result['status']);
     }
 
     public function logout(Request $request) {
@@ -164,14 +157,21 @@ class UserController extends Controller {
         } catch (JWTException $exception) {
             return response()->json([
                 'success' => false,
-                'message' => 'Sorry, user cannot be logged out',
+                'message' => $exception->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     public function detail(Request $request) {
-
-        $user = JWTAuth::authenticate($request->bearerToken());
-        return response()->json(['user' => $user]);
+        $result['status'] = 200;
+        try {
+            $result['data'] = $this->userService->findOne($request->bearerToken());
+        } catch (\Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage(),
+            ];
+        }
+        return response()->json($result, $result['status']);
     }
 }

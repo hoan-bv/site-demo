@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\ControllerUser;
+use App\Http\Controllers\LangController;
 use App\Http\Controllers\UserController;
+use App\Models\Language;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,22 +24,19 @@ use Illuminate\Support\Facades\Route;
 //    die;
 //    return $request->user();
 //});
-//Route::prefix('users')->group(function() {
-//    Route::get('/', function() {
-//        echo '<pre>';
-//        print_r(11111111111);
-//        die;
-//    });
-//    Route::post('register', [
-//        UserController::class,
-//        'register',
-//    ]);
-//    Route::get('/index', [
-//        App\Http\Controllers\UserController::class,
-//        'index',
-//    ]);
-//
-//});
+Route::get('/greeting/{locale}', function($locale) {
+    if (!in_array($locale, [
+        'en',
+        'es',
+        'fr',
+    ])) {
+        abort(400);
+    }
+    App::setLocale($locale);
+    echo __('message.title');
+    dd($locale);
+    //
+});
 Route::post('login', [
     UserController::class,
     'authenticate',
@@ -58,6 +58,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('create', [
         UserController::class,
         'store',
+    ]);
+    Route::post('index', [
+        LangController::class,
+        'index',
     ]);
 });
 Route::get('/test', function() {
