@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,8 +64,21 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         LangController::class,
         'index',
     ]);
+    Route::post('notify', [
+        UserController::class,
+        'notify',
+    ]);
+    Route::post('read', [
+        UserController::class,
+        'read',
+    ]);
 });
 Route::get('/test', function() {
+    Redis::set('name', 'Taylor');
+    $values = Redis::lrange('names', 5, 10);
+    echo '<pre>';
+    print_r(Redis::get('name'));
+    die;
     return 2222;
 });
 

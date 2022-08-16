@@ -135,7 +135,6 @@ class UserController extends Controller {
         $result['status'] = 200;
         try {
             $result['data'] = $this->userService->login($request);
-
         } catch (\Exception $e) {
             $result = [
                 'status' => 500,
@@ -174,4 +173,30 @@ class UserController extends Controller {
         }
         return response()->json($result, $result['status']);
     }
+
+    public function notify(Request $request) {
+        $result['status'] = 200;
+        try {
+            $result['data'] = $this->userService->notify($request->bearerToken());
+        } catch (\Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage(),
+            ];
+        }
+        return response()->json($result, $result['status']);
+    }
+    public function read(Request $request) {
+        $result['status'] = 200;
+        try {
+            $result['data'] = $this->userService->read($request);
+        } catch (\Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage(),
+            ];
+        }
+        return response()->json($result, $result['status']);
+    }
+
 }

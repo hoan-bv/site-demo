@@ -15,11 +15,12 @@ class TranslationFactory extends Factory {
     protected $model = Translation::class;
 
     public function definition() {
-
+        $i = 0;
         return [
-            'title'   => $this->faker->title,
-            'lang_id' => rand(1,2),
-            'content' => $this->faker->text,
+            'title_id' => rand(1, 2),
+            'lang_id'  => rand(1, 2),
+            'note'     => null,
+            'content'  => $this->faker->text,
         ];
     }
 }

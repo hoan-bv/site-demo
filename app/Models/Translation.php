@@ -41,8 +41,8 @@ class Translation extends Model {
      * @var array
      */
     protected $fillable = [
-        'language_id',
-        'title',
+        'lang_id',
+        'title_id',
         'content',
         'note',
         'created_at',

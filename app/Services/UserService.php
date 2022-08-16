@@ -3,9 +3,13 @@
 namespace App\Services;
 
 use App\Models\Language;
+use App\Models\Notification;
+use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -52,6 +56,43 @@ class UserService {
         if ($currentUser && $language) {
             $currentUser->lang_id = $language->id;
             $currentUser->save();
+        }
+        return $result;
+    }
+
+    public function notify(?string $bearerToken) {
+        $user   = JWTAuth::authenticate($bearerToken);
+        $result = [];
+        if ($user) {
+            $count_notify = Notification::where([
+                [
+                    'user_id',
+                    '=',
+                    $user->id,
+                ],
+                [
+                    'status',
+                    '=',
+                    Notification::UN_READ,
+                ],
+            ])->select('notifiable_type', DB::raw('count(*) as total'))->groupBy('notifiable_type')->get();
+            $result       = $count_notify;
+        } else {
+            $result['error'] = 'Login credentials are invalid.';
+        }
+        return $result;
+    }
+
+    public function read(Request $request) {
+
+        $user = JWTAuth::authenticate($request->bearerToken());
+        if ($user) {
+            $noty         = Notification::find($request['notify_id']);
+            $noty->status = Notification::READ;
+            $noty->save();
+            $result = 'Read';
+        } else {
+            $result['error'] = 'Login credentials are invalid.';
         }
         return $result;
     }
