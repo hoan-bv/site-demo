@@ -74,10 +74,11 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     ]);
 });
 Route::get('/test', function() {
+    $id = 1;
     Redis::set('name', 'Taylor');
-    $values = Redis::lrange('names', 5, 10);
+//    $values = Redis::lrange('names', 0, 10);
     echo '<pre>';
-    print_r(Redis::get('name'));
+    var_dump(Redis::get('name'));
     die;
     return 2222;
 });
